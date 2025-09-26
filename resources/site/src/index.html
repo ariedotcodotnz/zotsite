@@ -3,9 +3,45 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Zotero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- SEO Meta Tags -->
+    <title>Zotero Library Export - Research Reference Manager</title>
+    <meta name="description" content="Browse and search your exported Zotero research library. Access papers, notes, and references with advanced search and filtering capabilities.">
+    <meta name="keywords" content="zotero, research, bibliography, reference manager, academic papers, citations, library export">
+    <meta name="author" content="Zotsite - Zotero Export Utility">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Zotero Library Export - Research Reference Manager">
+    <meta property="og:description" content="Browse and search your exported Zotero research library. Access papers, notes, and references with advanced search and filtering capabilities.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:site_name" content="Zotero Library Export">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Zotero Library Export - Research Reference Manager">
+    <meta name="twitter:description" content="Browse and search your exported Zotero research library. Access papers, notes, and references with advanced search and filtering capabilities.">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Zotero Library Export",
+      "description": "Browse and search your exported Zotero research library. Access papers, notes, and references with advanced search and filtering capabilities.",
+      "applicationCategory": "ResearchTool",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
 
     <!-- Required Stylesheets -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -42,13 +78,26 @@ window.onload = function() {
   </head>
   <body>
 
-    <!-- navigation -->
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+      <div class="container-fluid">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="index.html">Library Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page" id="current-location">Browse</li>
+        </ol>
+      </div>
+    </nav>
+
+    <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-z navbar-toggleable-md"
-	 style="height: 50px;">
+	 style="height: 50px;" role="navigation" aria-label="Main navigation">
       <!-- brand -->
-      <a class="navbar-brand" href="https://www.zotero.org">
+      <a class="navbar-brand" href="https://www.zotero.org" aria-label="Zotero homepage">
 	<img src="img/zotero-logo.svg" class="d-block" width="120" height="34"
-	     xmlns="http://www.w3.org/2000/svg" focusable="false"></img>
+	     xmlns="http://www.w3.org/2000/svg" focusable="false" alt="Zotero logo"></img>
       </a>
       <!-- right side nav -->
       <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -56,65 +105,93 @@ window.onload = function() {
 	  <li class="nav-item" id="project-link-version">
 	    <a class="nav-item nav-link mr-md-2"
 	       href="https://github.com/plandes/zotsite/releases/tag/"
-	       id="bd-versions">Javascript Error</a>
+	       id="bd-versions" aria-label="View latest release">Latest Release</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="https://github.com/plandes/zotsite">
+	    <a class="nav-link" href="https://github.com/plandes/zotsite" aria-label="View project on GitHub">
 	      <img src="img/github-logo.svg" class="d-block" height="26"
-		   xmlns="http://www.w3.org/2000/svg" focusable="false"></img>
+		   xmlns="http://www.w3.org/2000/svg" focusable="false" alt="GitHub logo"></img>
+		   <span class="sr-only">GitHub Repository</span>
 	    </a>
 	  </li>
 	  <li class="nav-item">
 	    <div class="nav-item btn btn-bd-download btn-download-z btn-outline-primary mr-md-2 disabled"
-		 id="item-document-link-button">
-	      <div class="glyphicon glyphicon-link" href="#" id="item-document-link"></div>
+		 id="item-document-link-button" role="button" aria-label="Document link (disabled)">
+	      <div class="glyphicon glyphicon-link" href="#" id="item-document-link" aria-hidden="true"></div>
 	    </div>
 	  </li>
 	  <li class="nav-item">
 	    <a class="nav-item btn btn-bd-download btn-download-z btn-outline-primary mr-md-2"
-	       href="https://github.com/plandes/zotsite/releases//">Download</a>
+	       href="https://github.com/plandes/zotsite/releases/" aria-label="Download Zotsite">Download</a>
 	  </li>
 	  <li class="nav-item" id="init-button">
-	    <a class="nav-item btn btn-bd-download btn-download-z btn-outline-primary mr-md-2" href="#">Clear</a>
+	    <a class="nav-item btn btn-bd-download btn-download-z btn-outline-primary mr-md-2" href="#" aria-label="Clear current view">Clear</a>
 	  </li>
 	</ul>
       </div>
     </nav>
 
+    <!-- Alert/Status Messages -->
     <div class="alert alert-dismissible fade show" role="alert"
 	 id="alert-box"
-	 style="display: none;">
+	 style="display: none;" aria-live="polite">
     </div>
 
-    <!-- main pane -->
-    <table class="max-table">
-      <tr valign="top">
-	<!-- left tree nav -->
-	<td class="left-nav-col border">
+    <!-- Main Content Area -->
+    <main class="max-table" role="main">
+      <div class="row no-gutters" style="height: calc(100vh - 150px);">
+	<!-- Left Navigation Sidebar -->
+	<aside class="col-md-3 left-nav-col border" role="complementary" aria-label="Library navigation">
+	  <header class="search-header">
+	    <h2 class="sr-only">Search and Navigate</h2>
 	    <div class="input-group container left-nav-comp">
+	      <label for="termSearch" class="sr-only">Search library</label>
 	      <input type="hidden" name="search_param" value="all" id="search_param">
 	      <input type="text" class="form-control" id="termSearch" autofocus
-		     placeholder="Search term...">
-	      <span class="input-group-btn">
-		<button class="btn btn-default" type="button" onClick="zoteroSearchMin();">
-		  <span class="glyphicon glyphicon-search"></span>
+		     placeholder="Search papers, authors, keywords..." 
+		     aria-describedby="search-help">
+	      <div class="input-group-append">
+		<button class="btn btn-default" type="button" onClick="zoteroSearchMin();"
+			aria-label="Search library">
+		  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 		</button>
-	      </span>
-	    </div>
-	    <div class="scrollbar scrollbar-primary treelist">
-	      <div class="force-overflow">
-		<div class="container left-nav-comp treelist" id="tree"></div>
 	      </div>
+	      <small id="search-help" class="form-text text-muted sr-only">
+		Search across papers, authors, titles, and keywords in your library
+	      </small>
 	    </div>
-	</td>
+	  </header>
+	  <nav class="scrollbar scrollbar-primary treelist" role="navigation" aria-label="Library tree">
+	    <div class="force-overflow">
+	      <div class="container left-nav-comp treelist" id="tree" role="tree" aria-label="Collection and item tree"></div>
+	    </div>
+	  </nav>
+	</aside>
 
-	<!-- content right pane -->
-	<td id="zotero-main-content" class="center-cell">
-	  <div class="disabled-text" id="content">
-	    No Content
+	<!-- Main Content Pane -->
+	<section class="col-md-9 center-cell" id="main-content" role="main" aria-label="Content viewer">
+	  <header class="content-header sr-only">
+	    <h1 id="content-title">Library Content</h1>
+	  </header>
+	  <div class="disabled-text" id="content" aria-live="polite" aria-label="Selected content display">
+	    <div class="welcome-message">
+	      <h2>Welcome to Your Zotero Library</h2>
+	      <p>Select a collection or item from the navigation tree to view its contents.</p>
+	      <p>Use the search box above to quickly find papers, authors, or keywords.</p>
+	    </div>
 	  </div>
-	</td>
-      </tr>
-    </table>
+	</section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3 mt-auto" role="contentinfo">
+      <div class="container-fluid text-center">
+        <p class="mb-0 small text-muted">
+          Generated by <a href="https://github.com/plandes/zotsite" target="_blank" rel="noopener">Zotsite</a> - 
+          Zotero Export Utility
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
