@@ -14,7 +14,7 @@ import shutil
 from zensols.config import Settings, ConfigFactory
 from zensols.persist import persisted
 from . import (
-    ZoteroApplicationError, RegexItemMapper, IdItemMapper,
+    ZoteroApplicationError, RegexItemMapper, IdItemMapper, SeoItemMapper,
     Library, Walker,
     NavCreateVisitor, FileSystemCopyVisitor, PruneVisitor, PrintVisitor,
     BetterBibtexVisitor,
@@ -64,7 +64,7 @@ class SiteCreator(object):
     """
     file_mapping: str = field(default='item')
     """Whether to use unique item IDs for the file names or the full PDF file
-    name; either: ``item`` or ``long``
+    name; either: ``item``, ``long``, or ``seo`` (SEO-friendly URLs based on titles)
 
     """
     out_dir: Path = field(default=None)
@@ -107,6 +107,8 @@ class SiteCreator(object):
             mapper = RegexItemMapper(self.library, r'.*\.pdf$', '[ ]')
         elif self.file_mapping == 'item':
             mapper = IdItemMapper(self.library)
+        elif self.file_mapping == 'seo':
+            mapper = SeoItemMapper(self.library)
         else:
             raise ZoteroApplicationError(
                 f'Unknown file mapping: {self.file_mapping}')
@@ -195,3 +197,54 @@ class SiteCreator(object):
         self._copy_static()
         self._create_tree_data()
         self._copy_storage()
+        self._create_seo_files()
+
+    def _create_seo_files(self):
+        """Create SEO-related files like robots.txt and sitemap.xml."""
+        self._create_robots_txt()
+        self._create_sitemap_xml()
+
+    def _create_robots_txt(self):
+        """Create robots.txt file for search engine crawlers."""
+        robots_path = self.out_dir / 'robots.txt'
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'creating robots.txt: {robots_path}')
+        
+        robots_content = """User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: sitemap.xml
+
+# Allow indexing of main content
+Allow: /index.html
+Allow: /css/
+Allow: /js/
+Allow: /img/
+
+# Disallow storage directory direct access (PDFs accessible via interface)
+Disallow: /storage/
+"""
+        
+        with open(robots_path, 'w') as f:
+            f.write(robots_content)
+
+    def _create_sitemap_xml(self):
+        """Create sitemap.xml for search engines."""
+        sitemap_path = self.out_dir / 'sitemap.xml'
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'creating sitemap.xml: {sitemap_path}')
+        
+        # Basic sitemap with main page
+        sitemap_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>index.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+'''
+        
+        with open(sitemap_path, 'w') as f:
+            f.write(sitemap_content)
